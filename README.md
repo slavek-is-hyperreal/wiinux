@@ -29,7 +29,7 @@ Oryginalne źródła:
 - [WiiBoard Simple (Google Code Archive)](https://code.google.com/archive/p/wiiboard-simple/)
 - [Blog Tracking Balance](http://trackingbalance.blogspot.fr/2008/08/small-milestone.html)
 
-Dziękujemy pierwotnym twórcom za ich wkład w społeczność Open Source, który umożliwił powstanie tej wersji.
+Dziękuję pierwotnym twórcom za ich wkład w społeczność Open Source, który umożliwił powstanie tej wersji.
 
 ## Instalacja
 
@@ -129,13 +129,13 @@ Projekt powstał na bazie analizy wielu rozwiązań open-source oraz inżynierii
     *   Nasz skrypt `wiiboard_native.py` wykorzystuje interfejs `evdev` do czytania zdarzeń bezpośrednio z jądra, zamiast próbować "walczyć" z systemem o dostęp do Bluetooth.
 
 3.  **Kalibracja (Inżynieria Wsteczna):**
-    *   Odkryliśmy, że sterownik kernela udostępnia dane kalibracyjne w `/sys/bus/hid/drivers/wiimote/.../bboard_calib`.
-    *   Podczas naszych testów ustaliliśmy poprawny format tego pliku (3 bloki po 4 wartości dla sensorów: 0kg, 17kg, 34kg), co pozwoliło na uzyskanie precyzji lepszej niż w oryginalnych skryptach.
-    *   Wykorzystujemy interpolację liniową (z uwzględnieniem faktu, że `evdev` raportuje wartości relatywne - delty), co eliminuje błędy pomiarowe przy lekkim nacisku.
+    *   Odkryłem, że sterownik kernela udostępnia dane kalibracyjne w `/sys/bus/hid/drivers/wiimote/.../bboard_calib`.
+    *   Podczas moich testów ustaliłem poprawny format tego pliku (3 bloki po 4 wartości dla sensorów: 0kg, 17kg, 34kg), co pozwoliło na uzyskanie precyzji lepszej niż w oryginalnych skryptach.
+    *   Wykorzystuję interpolację liniową (z uwzględnieniem faktu, że `evdev` raportuje wartości relatywne - delty), co eliminuje błędy pomiarowe przy lekkim nacisku.
 
 4.  **Inspiracje i wiedza (Stavros):**
     *   Duże podziękowania dla [Stavrosa Korokithakisa](https://www.stavros.io/posts/your-weight-online/) za jego wieloletnią walkę z Linuxem i Balance Boardem.
-    *   Jego odkrycie, że trwałe sparowanie ("Permanent Pairing" PIN `0000`) i zaufanie urządzenia ("Trusted") jest kluczem do działania przycisku POWER, było fundamentem naszego podejścia:
+    *   Jego odkrycie, że trwałe sparowanie ("Permanent Pairing" PIN `0000`) i zaufanie urządzenia ("Trusted") jest kluczem do działania przycisku POWER, było fundamentem mojego podejścia:
         > "I eventually discovered that, for permanent pairing, one must needs use the PIN “000000” [...] Using that, the board was permanently paired with my computer, and I would no longer need to turn it over [...] and then (finally) use it, every single time."
         >
         > "To trust the device so it will connect in the future, run `bt-device --set ##:##:##:##:##:## Trusted 1`"
@@ -192,16 +192,16 @@ This project is built upon the analysis of various open-source solutions and rev
 
 2.  **Power Button Support (Linux Kernel):**
     *   Thanks to the work of Linux kernel developers, the `hid-wiimote` driver automatically handles connection via the POWER button for paired devices.
-    *   Our `wiiboard_native.py` script uses the `evdev` interface to read events directly from the kernel, rather than fighting the system for Bluetooth access.
+    *   My `wiiboard_native.py` script uses the `evdev` interface to read events directly from the kernel, rather than fighting the system for Bluetooth access.
 
 3.  **Calibration (Reverse Engineering):**
-    *   We discovered that the kernel driver exposes calibration data in `/sys/bus/hid/drivers/wiimote/.../bboard_calib`.
-    *   During our testing, we determined the correct format of this file (3 blocks of 4 values for sensors: 0kg, 17kg, 34kg), allowing for precision surpassing the original scripts.
-    *   We use linear interpolation (accounting for the fact that `evdev` reports relative values/deltas), eliminating measurement errors at light pressure.
+    *   I discovered that the kernel driver exposes calibration data in `/sys/bus/hid/drivers/wiimote/.../bboard_calib`.
+    *   During my testing, I determined the correct format of this file (3 blocks of 4 values for sensors: 0kg, 17kg, 34kg), allowing for precision surpassing the original scripts.
+    *   I use linear interpolation (accounting for the fact that `evdev` reports relative values/deltas), eliminating measurement errors at light pressure.
 
 4.  **Inspiration and Knowledge (Stavros):**
     *   Huge thanks to [Stavros Korokithakis](https://www.stavros.io/posts/your-weight-online/) for his years of struggle with Linux and the Balance Board.
-    *   His discovery that "Permanent Pairing" (PIN `0000`) and trusting the device ("Trusted") is the key to making the POWER button work was the foundation of our approach:
+    *   His discovery that "Permanent Pairing" (PIN `0000`) and trusting the device ("Trusted") is the key to making the POWER button work was the foundation of my approach:
         > "I eventually discovered that, for permanent pairing, one must needs use the PIN “000000” [...] Using that, the board was permanently paired with my computer, and I would no longer need to turn it over [...] and then (finally) use it, every single time."
         >
         > "To trust the device so it will connect in the future, run `bt-device --set ##:##:##:##:##:## Trusted 1`"
@@ -217,7 +217,7 @@ Original sources:
 - [WiiBoard Simple (Google Code Archive)](https://code.google.com/archive/p/wiiboard-simple/)
 - [Blog Tracking Balance](http://trackingbalance.blogspot.fr/2008/08/small-milestone.html)
 
-We thank the original creators for their contribution to the Open Source community, which made this version possible.
+I thank the original creators for their contribution to the Open Source community, which made this version possible.
 
 ## License
 
