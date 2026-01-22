@@ -65,7 +65,7 @@ Przygotowałem skrypt automatyzujący ten proces.
 ---
 
 ### Tryb 1: Standardowy (Client Mode) - `wiiboard.py`
-Zalecany do pierwszego parowania. Wymaga wciśnięcia czerwonego przycisku **SYNC** na wadze (lub jeśli waga jest już "Zaufana", można próbować POWER, ale bywa to zawodne).
+Zalecany do pierwszego parowania. Wymaga wciśnięcia czerwonego przycisku **SYNC** na wadze. (Przycisk POWER w tym trybie NIE działa).
 
 1. Uruchom skrypt:
    ```bash
@@ -73,11 +73,7 @@ Zalecany do pierwszego parowania. Wymaga wciśnięcia czerwonego przycisku **SYN
    ```
    (Jeśli nie podasz adresu, skrypt poszuka nowej wagi lub połączy się z zapamiętaną).
 
-### Tryb 2: Serwer (Server Mode) - `wiiboard_server.py` **[ZALECANY NA CO DZIEŃ]**
-Ten tryb pozwala na łączenie się poprzez wciśnięcie przycisku **POWER** na wadze. Komputer "czeka" na połączenie od wagi.
-
 ### Tryb 2: Codzienny (Native/Power Button) - `wiiboard_native.py` **[NAJLEPSZY]**
-
 To jest najbardziej niezawodny sposób używania wagi na Linuxie. Wykorzystuje on fakt, że nowoczesne kernele Linux (sterownik `hid-wiimote`) automatycznie obsługują wagę po wciśnięciu przycisku POWER.
 
 1.  Zainstaluj bibliotekę `evdev` (jeśli jeszcze nie masz):
@@ -96,6 +92,27 @@ To jest najbardziej niezawodny sposób używania wagi na Linuxie. Wykorzystuje o
 > *   Działa natychmiast po wciśnięciu POWER (jak prawdziwa waga).
 > *   Najdokładniejszy pomiar (korzysta z kalibracji fabrycznej zaszytej w EEPROM wagi).
 > *   Nie blokuje Bluetooth (korzysta z systemowego sterownika).
+
+---
+
+---
+
+### Programowanie gier i aplikacji (Biblioteka Python)
+
+Plik `wiiboard_native.py` może być używany jako biblioteka w Twoich projektach (np. gry w PyGame, interfejsy w Godot/Python).
+
+1. Zaimportuj klasę `WiiboardNative`:
+   ```python
+   from wiiboard_native import WiiboardNative
+   
+   board = WiiboardNative()
+   if board.connect():
+       # Pętla główna gry
+       while True:
+           board.update() # Odczyt nieblokujący (ważne dla FPS!)
+           print(board.weight) 
+   ```
+2. Zobacz plik `example_game.py` dla gotowego przykładu implementacji prostej gry opartej na balansie ciała (ASCII).
 
 ---
 
@@ -143,6 +160,27 @@ This is a refactored version of the Wii Balance Board driver originally written 
 > [!NOTE]
 > **AI Attribution**
 > This refactoring and project preparation was largely assisted by Artificial Intelligence (AI), in collaboration with the user (Human-in-the-Loop).
+
+---
+
+### Game and App Programming (Python Library)
+
+The `wiiboard_native.py` file can be used as a library in your own projects (e.g., PyGame games, Godot/Python interfaces).
+
+1. Import the `WiiboardNative` class:
+   ```python
+   from wiiboard_native import WiiboardNative
+   
+   board = WiiboardNative()
+   if board.connect():
+       # Main game loop
+       while True:
+           board.update() # Non-blocking read (crucial for FPS!)
+           print(board.weight) 
+   ```
+2. See `example_game.py` for a ready-made example of a simple body-balance game implementation (ASCII).
+
+---
 
 ## Sources and Technical Details
 
