@@ -19,6 +19,7 @@ import collections
 import bluetooth
 import sys
 import os
+import subprocess
 
 # --- Stałe Wiiboard ---
 CONTINUOUS_REPORTING = b'\x04'
@@ -273,6 +274,19 @@ def save_config(address):
     except:
         pass
 
+def trust_device(address):
+    logger.info(f"Próba dodania urządzenia {address} do zaufanych (dla przycisku Power)...")
+    try:
+        # Wymaga bluetoothctl w systemie
+        subprocess.run(["bluetoothctl", "trust", address], check=True, stdout=subprocess.DEVNULL)
+        logger.info(f"Urządzenie {address} zostało dodane do zaufanych.")
+        return True
+    except subprocess.CalledProcessError:
+        logger.warning(f"Nie udało się dodać urządzenia {address} do zaufanych (może brak uprawnień?)")
+    except FileNotFoundError:
+        logger.warning("Nie znaleziono polecenia bluetoothctl.")
+    return False
+
 if __name__ == '__main__':
     if '-d' in sys.argv:
         logger.setLevel(logging.DEBUG)
@@ -289,6 +303,7 @@ if __name__ == '__main__':
         if board.connect(address):
             connected = True
             save_config(address)
+            trust_device(address)
         else:
             logger.error("Nie udało się połączyć z podanym adresem.")
             sys.exit(1)
@@ -298,14 +313,25 @@ if __name__ == '__main__':
         cached_address = load_config()
         if cached_address:
             logger.info(f"Znaleziono zapamiętany adres: {cached_address}")
-            if board.connect(cached_address):
-                connected = True
-                address = cached_address
-            else:
-                logger.warning("Nie udało się połączyć z zapamiętaną wagą. Przechodzę do skanowania...")
+            print(f"\n>>> 💡 Proszę wcisnąć przycisk POWER na wadze, aby się połączyć...", end="\n\n")
+            
+            # Próba połączenia przez kilka sekund (np. 5 sekund)
+            for i in range(1, 20):
+                print(f"   Próba połączenia {i}/20...   ", end='\r')
+                if board.connect(cached_address):
+                    print(f"\n")
+                    connected = True
+                    address = cached_address
+                    trust_device(address) # Upewniamy się, że jest zaufane
+                    break
+                time.sleep(0.5) 
+
+            if not connected:
+                logger.warning("\nNie udało się połączyć z zapamiętaną wagą. Przechodzę do skanowania...")
 
     # 3. Priorytet: Skanowanie
     if not connected:
+        print(">>> Rozpoczynam skanowanie otoczenia (to może chwilę potrwać)...")
         try:
             wiiboards = discover()
             if not wiiboards:
@@ -316,6 +342,7 @@ if __name__ == '__main__':
             if board.connect(address):
                 connected = True
                 save_config(address)
+                trust_device(address)
         except bluetooth.btcommon.BluetoothError as e:
             logger.error(f"Błąd Bluetooth podczas skanowania: {e}")
             logger.error("Upewnij się, że Bluetooth jest włączony i masz odpowiednie uprawnienia (uruchom jako sudo).")
